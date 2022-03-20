@@ -3,14 +3,34 @@ name: CI
 on:
   push: {}
 
+env:
+  DEBIAN_FRONTEND: noninteractive
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: ubuntu:impish
 
     steps:
+      - name: Update system repositories
+        if: runner.os == 'Linux'
+        run: apt update -y
+
+      - name: Upgrade system
+        if: runner.os == 'Linux'
+        run: apt full-upgrade -y
+
       - name: Install required dependencies
         if: runner.os == 'Linux'
-        run: sudo apt install libcjson-dev libcurl4-openssl-dev libssl-dev mosquitto-dev libmosquitto-dev
+        run: |
+          apt install -y \
+            libcjson-dev \
+            libcurl4-openssl-dev \
+            libssl-dev mosquitto-dev \
+            libmosquitto-dev \
+            build-essential \
+            cmake \
+            pkg-config
 
       - name: Checkout repository
         uses: actions/checkout@v2
