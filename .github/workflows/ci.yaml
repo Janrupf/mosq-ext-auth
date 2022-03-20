@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Install required dependencies
         if: runner.os == 'Linux'
-        run: sudo apt install libcjson-dev libcurl4-openssl-dev libssl-dev mosquitto-dev
+        run: sudo apt install libcjson-dev libcurl4-openssl-dev libssl-dev mosquitto-dev libmosquitto-dev
 
       - name: Checkout repository
         uses: actions/checkout@v2
