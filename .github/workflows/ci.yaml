@@ -8,17 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Update system repositories
-        if: runner.os == 'Linux'
-        run: sudo apt update
-
-      - name: Upgrade system
-        if: runner.os == 'Linux'
-        run: sudo apt full-upgrade
-
       - name: Install required dependencies
         if: runner.os == 'Linux'
-        run: sudo apt install libcjson-dev libcurl-dev libssl-dev mosquitto-dev
+        run: sudo apt install libcjson-dev libcurl4-openssl-dev libssl-dev mosquitto-dev
 
       - name: Checkout repository
         uses: actions/checkout@v2
