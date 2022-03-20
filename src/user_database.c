@@ -47,6 +47,12 @@ static mosq_ext_auth_user_database_entry_t *create_entry(
 
 
 static void add_user(mosq_ext_auth_user_database_t *database, const char *username, const char *password) {
+    mosquitto_log_printf(
+            MOSQ_LOG_DEBUG,
+            "Adding user %s to database",
+            username
+    );
+
     mosq_ext_auth_user_database_entry_t *entry = create_entry(database, username, password);
 
     if(!database->last) {
@@ -134,14 +140,33 @@ int mosq_ext_auth_authenticate_user_against_database(
 ) {
     if(database) {
         for(mosq_ext_auth_user_database_entry_t *entry = database->first; entry != NULL; entry = entry->next) {
+            mosquitto_log_printf(
+                    MOSQ_LOG_DEBUG,
+                    "Checking if user %s matches %s",
+                    username,
+                    entry->username
+            );
+
             if(strcmp(username, entry->username) == 0) {
                 unsigned char *hash = hash_password(database, password);
 
                 if(memcmp(hash, entry->password, EVP_MAX_MD_SIZE) == 0) {
                     return 1;
+                } else {
+                    mosquitto_log_printf(
+                            MOSQ_LOG_DEBUG,
+                            "User %s found in database, but passwords don't match",
+                            username
+                    );
                 }
             }
         }
+
+        mosquitto_log_printf(
+                MOSQ_LOG_DEBUG,
+                "User %s not found in database",
+                username
+        );
     } else {
         mosquitto_log_printf(
                 MOSQ_LOG_WARNING,
