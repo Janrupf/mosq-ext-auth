@@ -24,6 +24,7 @@ int mosq_ext_auth_do_http_auth(const char *username, const char *password, mosq_
     curl_easy_reset(data->curl);
     curl_easy_setopt(data->curl, CURLOPT_URL, data->http_auth_endpoint);
     curl_easy_setopt(data->curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(data->curl, CURLOPT_USERAGENT, "MosqExtAuth/1.0.0");
     curl_easy_setopt(data->curl, CURLOPT_WRITEFUNCTION, http_recv_callback);
     curl_easy_setopt(data->curl, CURLOPT_WRITEDATA, NULL);
 
