@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Update system repositories
+        if: runner.os == 'Linux'
+        run: sudo apt update
+
+      - name: Upgrade system
+        if: runner.os == 'Linux'
+        run: sudo apt full-upgrade
+
+      - name: Install required dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt install libcjson-dev libcurl-dev libssl-dev mosquitto-dev
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          mkdir build
+          
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel
+          
+          mkdir bin
+          mv build/libmosq_ext_auth.so bin
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ runner.os }} package
+          path: bin/
