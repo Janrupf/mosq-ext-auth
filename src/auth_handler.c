@@ -8,6 +8,15 @@
 
 int mosq_ext_auth_callback(int event, void *event_data, void *userdata) {
     struct mosquitto_evt_basic_auth *evt = event_data;
+    if(!evt->username || !evt->password) {
+        mosquitto_log_printf(
+            MOSQ_LOG_DEBUG,
+            "User connecting without username or password, not handling in mosq-ext-auth"
+        );
+
+        return MOSQ_ERR_PLUGIN_DEFER;
+    }
+
     mosq_ext_auth_userdata_t *data = userdata;
 
     mosquitto_log_printf(MOSQ_LOG_DEBUG, "User %s:%s authenticating", evt->username, evt->password);
