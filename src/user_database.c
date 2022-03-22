@@ -139,6 +139,15 @@ int mosq_ext_auth_authenticate_user_against_database(
         const char *password
 ) {
     if(database) {
+        mosquitto_log_printf(
+                MOSQ_LOG_DEBUG,
+                "Database starts at %p with %s and ends at %p with %s",
+                database->first,
+                database->first->username,
+                database->last,
+                database->last->username
+        );
+
         for(mosq_ext_auth_user_database_entry_t *entry = database->first; entry != NULL; entry = entry->next) {
             mosquitto_log_printf(
                     MOSQ_LOG_DEBUG,
